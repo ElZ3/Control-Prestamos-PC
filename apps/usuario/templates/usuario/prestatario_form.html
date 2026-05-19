@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-white py-3 text-center   ">
+               <h4 class="mb-0 text-dark fw-bold d-flex justify-content-center align-items-center">
+                    <i class="fas fa-users me-2 text-dark"></i>
+                    {{ titulo }}
+                </h4>
+            </div>
+
+            <div class="card-body">
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <!-- ROL + CARRERA -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Tipo</label>
+                            {{ form.tipo }}
+                            <div class="text-danger small">{{ form.tipo.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6" id="div-carrera">
+                            <label class="form-label fw-bold">Carrera</label>
+                            {{ form.carrera }}
+                            <div class="text-danger small">{{ form.carrera.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- NOMBRES -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombres</label>
+                            {{ form.nombre }}
+                            <div class="text-danger small">{{ form.nombre.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Apellidos</label>
+                            {{ form.apellido }}
+                            <div class="text-danger small">{{ form.apellido.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- CARNET + DUI -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Carnet</label>
+                            {{ form.carnet }}
+                            <div class="text-danger small">{{ form.carnet.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">DUI</label>
+                            {{ form.dui }}
+                            <div class="text-danger small">{{ form.dui.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- EMAIL + ESTADO -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Correo Institucional</label>
+                            {{ form.correo }}
+                            <div class="text-danger small">{{ form.correo.errors.0 }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Estado</label>
+                            {{ form.estado }}
+                            <div class="text-danger small">{{ form.estado.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="d-flex justify-content-end border-top pt-3">
+
+                        <a href="{% url 'prestatario_list' %}"
+                           class="btn btn-white border border-dark me-2 text-dark">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn text-white"
+                                style="background-color:#791F1B;">
+                            Guardar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const selectRol = document.getElementById('select-rol');
+    const divCarrera = document.getElementById('div-carrera');
+    const selectCarrera = document.getElementById('select-carrera');
+
+    function toggleCarrera() {
+        if (selectRol.value === 'ESTUDIANTE') {
+            divCarrera.style.display = 'block';
+        } else {
+            divCarrera.style.display = 'none';
+            selectCarrera.value = '';
+        }
+    }
+
+    toggleCarrera();
+    selectRol.addEventListener('change', toggleCarrera);
+});
+</script>
+
+{% endblock %}

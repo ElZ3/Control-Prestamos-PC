@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* =========================
+   MODAL PERSONALIZADO
+========================= */
+
+.custom-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 99999;
+}
+
+.custom-modal-content{
+    background: white;
+    width: 400px;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+
+    animation: modalShow 0.25s ease;
+}
+
+.custom-modal-icon{
+    width: 70px;
+    height: 70px;
+
+    background: #fff3cd;
+    color: #856404;
+
+    border-radius: 50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin: 0 auto 20px;
+
+    font-size: 28px;
+}
+
+@keyframes modalShow{
+    from{
+        opacity:0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to{
+        opacity:1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+</style>
+
+<div class="card shadow-sm mb-4">
+
+    <!-- HEADER -->
+    <div class="card-header bg-white text-center py-3">
+        <h4 class="mb-0 text-dark fw-bold d-flex justify-content-center align-items-center">
+            <i class="fas fa-users me-2 text-dark"></i>
+            Gestión de prestatarios
+        </h4>
+    </div>
+
+    <!-- BUSCADOR + BOTONES -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap px-3 pt-3 pb-2">
+
+        <!-- BUSCADOR -->
+        <form method="GET"
+              class="mb-0 flex-grow-1 me-3"
+              onsubmit="return false;">
+
+            <div class="input-group w-100">
+
+                <input type="text"
+                       id="searchInput"
+                       class="form-control border-dark"
+                       placeholder="Buscar por carnet o nombre...">
+
+                <button type="button"
+                        class="btn text-white"
+                        style="background-color:#791F1B; cursor:default;">
+
+                    <i class="fas fa-search"></i>
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- BOTONES -->
+        <div class="d-flex gap-2 align-items-center flex-shrink-0">
+
+            <a href="{% url 'prestatario_create' %}"
+               class="btn text-white"
+               style="background-color:#791F1B;">
+
+                Nuevo Prestatario
+
+            </a>
+
+            <a href="{% url 'usuario_list' %}"
+               class="btn text-white"
+               style="background-color:#000;">
+
+                Administradores
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="card-body pt-2">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="usuariosTable">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Carnet</th>
+                        <th>Nombre</th>
+                        <th>DUI</th>
+                        <th>Tipo</th>
+                        <th>Carrera</th>
+                        <th>Correo</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for u in usuarios %}
+
+                <tr class="fila-usuario">
+
+                    <!-- CARNET -->
+                    <td class="carnet-col">
+                        <strong>{{ u.carnet }}</strong>
+                    </td>
+
+                    <!-- NOMBRE -->
+                    <td class="nombre-col">
+                        {{ u.nombre }} {{ u.apellido }}
+                    </td>
+
+                    <!-- DUI -->
+                    <td>
+                        {{ u.dui }}
+                    </td>
+
+                    <!-- TIPO -->
+                    <td>
+
+                        {% if u.tipo == 'ESTUDIANTE' %}
+
+                            <span class="badge bg-primary">
+                                Estudiante
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                Docente
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- CARRERA -->
+                    <td>
+
+                        {% if u.carrera %}
+
+                            {{ u.carrera.nombre }}
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                —
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- CORREO -->
+                    <td>
+                        {{ u.correo }}
+                    </td>
+
+                    <!-- ESTADO -->
+                    <td>
+
+                        {% if u.estado == 'ACTIVO' %}
+
+                            <span class="badge bg-success">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+                                Inactivo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-center">
+
+                        <!-- EDITAR -->
+                        <a href="{% url 'prestatario_update' u.pk %}"
+                           class="text-dark me-3"
+                           title="Editar">
+
+                            <i class="fas fa-pencil-alt"></i>
+
+                        </a>
+
+                        <!-- ELIMINAR -->
+                        <button type="button"
+                                class="btn p-0 border-0 bg-transparent text-dark delete-btn"
+                                data-url="{% url 'prestatario_delete' u.pk %}"
+                                data-nombre="{{ u.nombre }} {{ u.apellido }}">
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr id="noResultsRow">
+
+                    <td colspan="8"
+                        class="text-center text-muted py-4">
+
+                        No hay usuarios registrados
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                <!-- NO RESULTADOS -->
+                <tr id="jsNoResultsRow" style="display:none;">
+
+                    <td colspan="8"
+                        class="text-center text-muted py-4">
+
+                        No se encontraron coincidencias.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ELIMINAR
+========================= -->
+
+<div id="deleteModalCustom" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <div class="custom-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+
+        <h5 class="fw-bold mb-2">
+            Eliminar Usuario
+        </h5>
+
+        <p id="deleteMessage"
+           class="text-muted mb-4">
+
+            ¿Deseas eliminar este usuario?
+
+        </p>
+
+        <div class="d-flex justify-content-center gap-2">
+
+            <!-- CANCELAR -->
+            <button id="cancelDelete"
+                    class="btn btn-light border">
+
+                Cancelar
+
+            </button>
+
+            <!-- FORM -->
+            <form id="deleteForm"
+                  method="POST">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="btn text-white"
+                        style="background-color:#791F1B;">
+
+                    Sí, eliminar
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // =========================
+    // BUSCADOR
+    // =========================
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const rows =
+        document.querySelectorAll(".fila-usuario");
+
+    const noResults =
+        document.getElementById("jsNoResultsRow");
+
+    searchInput.addEventListener("input", function(){
+
+        const term =
+            searchInput.value.toLowerCase();
+
+        let matches = 0;
+
+        rows.forEach(row => {
+
+            const carnet =
+                row.querySelector(".carnet-col")
+                .textContent
+                .toLowerCase();
+
+            const nombre =
+                row.querySelector(".nombre-col")
+                .textContent
+                .toLowerCase();
+
+            if(
+                carnet.includes(term) ||
+                nombre.includes(term)
+            ){
+                row.style.display = "";
+                matches++;
+            }
+            else{
+                row.style.display = "none";
+            }
+
+        });
+
+        noResults.style.display =
+            matches === 0 ? "" : "none";
+
+    });
+
+    // =========================
+    // MODAL ELIMINAR
+    // =========================
+
+    const modal =
+        document.getElementById("deleteModalCustom");
+
+    const deleteButtons =
+        document.querySelectorAll(".delete-btn");
+
+    const deleteForm =
+        document.getElementById("deleteForm");
+
+    const deleteMessage =
+        document.getElementById("deleteMessage");
+
+    const cancelDelete =
+        document.getElementById("cancelDelete");
+
+    // ABRIR MODAL
+    deleteButtons.forEach(btn => {
+
+        btn.addEventListener("click", function(){
+
+            const url =
+                this.dataset.url;
+
+            const nombre =
+                this.dataset.nombre;
+
+            deleteForm.action = url;
+
+            deleteMessage.innerHTML =
+                `¿Deseas eliminar a <strong>${nombre}</strong>?`;
+
+            modal.style.display = "flex";
+
+        });
+
+    });
+
+    // CANCELAR
+    cancelDelete.addEventListener("click", function(){
+
+        modal.style.display = "none";
+
+    });
+
+    // CLICK AFUERA
+    modal.addEventListener("click", function(e){
+
+        if(e.target === modal){
+            modal.style.display = "none";
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

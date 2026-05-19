@@ -1,0 +1,125 @@
+from django.urls import reverse_lazy
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
+from .models import Carrera
+from apps.usuario.models import Prestatario
+from .forms import CarreraForm
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+# --- MIXIN DE SEGURIDAD ---
+class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    """
+    Permite acceso solo a usuarios autenticados con rol:
+    - administrador
+    - superadministrador
+    """
+
+    def test_func(self):
+        user = self.request.user
+
+        if not user.is_authenticated:
+            return False
+
+        # Validación por rol (principal)
+        if user.rol in ['administrador', 'superadministrador']:
+            return True
+
+        # Fallback por flags de Django (por seguridad)
+        if user.is_staff or user.is_superuser:
+            return True
+
+        return False
+
+    def handle_no_permission(self):
+        return redirect('login')  
+
+class CarreraListView(AdminRequiredMixin, ListView):
+    model = Carrera
+    template_name = 'carrera/carrera_list.html'
+    context_object_name = 'carreras'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Carrera.objects.filter(
+                Q(codigo__icontains=query) | Q(nombre__icontains=query)
+            ).order_by('codigo')
+        return Carrera.objects.all().order_by('codigo')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query'] = self.request.GET.get('q', '')
+        return context
+
+
+class CarreraCreateView(AdminRequiredMixin, CreateView):
+    model = Carrera
+    form_class = CarreraForm
+    template_name = 'carrera/carrera_form.html'
+    success_url = reverse_lazy('carrera_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Crear Carrera'
+        return context
+
+    def form_valid(self, form):
+
+        # GUARDAR USUARIO QUE CREÓ
+        form.instance.creado_por = self.request.user
+
+        messages.success(
+            self.request,
+            'Carrera registrada con éxito.'
+        )
+
+        return super().form_valid(form)
+
+class CarreraUpdateView(AdminRequiredMixin, UpdateView):
+    model = Carrera
+    form_class = CarreraForm
+    template_name = 'carrera/carrera_form.html'
+    success_url = reverse_lazy('carrera_list')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = 'Editar Carrera'
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Carrera actualizada correctamente.')
+        return super().form_valid(form)
+
+
+class CarreraDeleteView(AdminRequiredMixin, DeleteView):
+
+    model = Carrera
+
+    success_url = reverse_lazy('carrera_list')
+
+    def post(self, request, *args, **kwargs):
+
+        carrera = self.get_object()
+
+        # Verificar si existe algún prestatario usando esta carrera
+        en_uso = Prestatario.objects.filter(
+            carrera=carrera
+        ).exists()
+
+        if en_uso:
+
+            messages.error(
+                request,
+                'No se puede eliminar la carrera porque ya está asignada a prestatarios.'
+            )
+
+            return redirect('carrera_list')
+
+        messages.success(
+            request,
+            'Carrera eliminada correctamente.'
+        )
+
+        return super().post(request, *args, **kwargs)

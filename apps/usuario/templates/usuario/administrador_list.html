@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* =========================
+   MODAL PERSONALIZADO
+========================= */
+
+.custom-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 99999;
+}
+
+.custom-modal-content{
+    background: white;
+    width: 420px;
+    border-radius: 20px;
+    padding: 30px;
+    text-align: center;
+
+    animation: modalShow 0.25s ease;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.custom-modal-icon{
+    width: 75px;
+    height: 75px;
+
+    background: #fff3cd;
+    color: #856404;
+
+    border-radius: 50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin: 0 auto 20px;
+
+    font-size: 30px;
+}
+
+@keyframes modalShow{
+    from{
+        opacity:0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to{
+        opacity:1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.delete-btn:hover{
+    color: #791F1B !important;
+}
+
+.edit-btn:hover{
+    color: #0d6efd !important;
+}
+
+</style>
+
+<div class="card shadow-sm mb-4">
+
+    <!-- HEADER -->
+    <div class="card-header bg-white py-3 position-relative">
+
+        <!-- REGRESO -->
+        <div class="position-absolute start-0 top-50 translate-middle-y ms-3">
+
+            <a href="{% url 'prestatario_list' %}"
+               class="btn text-white"
+               style="background-color:#6c757d;">
+
+                <i class="fas fa-arrow-left me-1"></i>
+                Gestión de prestatario
+
+            </a>
+
+        </div>
+
+        <!-- TÍTULO -->
+        <h4 class="mb-0 text-dark fw-bold text-center">
+
+            <i class="fas fa-users me-2"></i>
+            Gestión de Usuarios
+
+        </h4>
+
+    </div>
+
+    <!-- BUSCADOR + BOTÓN -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap px-3 pt-3 pb-2">
+
+        <!-- BUSCADOR -->
+        <form method="GET"
+              class="mb-0 flex-grow-1 me-3"
+              onsubmit="return false;">
+
+            <div class="input-group w-100">
+
+                <input type="text"
+                       id="searchInput"
+                       class="form-control border-dark"
+                       placeholder="Buscar por carnet o nombre...">
+
+                <button type="button"
+                        class="btn text-white"
+                        style="background-color:#791F1B; cursor:default;">
+
+                    <i class="fas fa-search"></i>
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- BOTÓN NUEVO -->
+        <div class="flex-shrink-0">
+
+            <a href="{% url 'usuario_create' %}"
+               class="btn text-white"
+               style="background-color:#791F1B;">
+
+                <i class="fas fa-user-plus me-1"></i>
+                Nuevo Usuario
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="card-body pt-2">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="userTable">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Carnet</th>
+                        <th>Nombre</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for u in usuarios %}
+
+                <tr class="fila-usuario">
+
+                    <!-- CARNET -->
+                    <td class="carnet-col">
+                        <strong>{{ u.carnet }}</strong>
+                    </td>
+
+                    <!-- NOMBRE -->
+                    <td class="nombre-col">
+                        {{ u.nombre }} {{ u.apellido }}
+                    </td>
+
+                    <!-- ROL -->
+                    <td>
+
+                        {% if u.rol == 'superadministrador' %}
+
+                            <span class="badge bg-dark">
+                                Superadministrador
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                Administrador
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ESTADO -->
+                    <td>
+
+                        {% if u.is_active %}
+
+                            <span class="badge bg-success">
+                                Activo
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger">
+                                Inactivo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-center">
+
+                        <!-- EDITAR -->
+                        <a href="{% url 'usuario_edit' u.pk %}"
+                           class="text-dark me-3 edit-btn"
+                           title="Editar">
+
+                            <i class="fas fa-pencil-alt"></i>
+
+                        </a>
+
+                        <!-- NO MOSTRAR ELIMINAR AL MISMO USUARIO -->
+                        {% if request.user.pk != u.pk %}
+
+                            <button type="button"
+                                    class="btn p-0 border-0 bg-transparent text-dark delete-btn"
+                                    data-url="{% url 'usuario_delete' u.pk %}"
+                                    data-nombre="{{ u.nombre }} {{ u.apellido }}">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr id="emptyRow">
+
+                    <td colspan="5"
+                        class="text-center text-muted py-4">
+
+                        No hay usuarios registrados
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                <!-- SIN RESULTADOS -->
+                <tr id="noResultsRow" style="display:none;">
+
+                    <td colspan="5"
+                        class="text-center text-muted py-4">
+
+                        No se encontraron coincidencias.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ELIMINAR
+========================= -->
+
+<div id="deleteModalCustom" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <!-- ICONO -->
+        <div class="custom-modal-icon">
+
+            <i class="fas fa-trash-alt"></i>
+
+        </div>
+
+        <!-- TÍTULO -->
+        <h5 class="fw-bold mb-2">
+
+            Eliminar Usuario
+
+        </h5>
+
+        <!-- MENSAJE -->
+        <p id="deleteMessage"
+           class="text-muted mb-4">
+
+            ¿Deseas eliminar este usuario?
+
+        </p>
+
+        <!-- BOTONES -->
+        <div class="d-flex justify-content-center gap-2">
+
+            <!-- CANCELAR -->
+            <button id="cancelDelete"
+                    class="btn btn-light border">
+
+                Cancelar
+
+            </button>
+
+            <!-- FORM -->
+            <form id="deleteForm"
+                  method="POST">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="btn text-white"
+                        style="background-color:#791F1B;">
+
+                    Sí, eliminar
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    // =========================
+    // BUSCADOR
+    // =========================
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const rows =
+        document.querySelectorAll(".fila-usuario");
+
+    const noResultsRow =
+        document.getElementById("noResultsRow");
+
+    function updateSearch(){
+
+        const value =
+            searchInput.value.toLowerCase();
+
+        let count = 0;
+
+        rows.forEach(row => {
+
+            const carnet =
+                row.querySelector(".carnet-col")
+                .textContent
+                .toLowerCase();
+
+            const nombre =
+                row.querySelector(".nombre-col")
+                .textContent
+                .toLowerCase();
+
+            if(
+                carnet.includes(value) ||
+                nombre.includes(value)
+            ){
+                row.style.display = "";
+                count++;
+            }
+            else{
+                row.style.display = "none";
+            }
+
+        });
+
+        noResultsRow.style.display =
+            count === 0 ? "" : "none";
+
+    }
+
+    searchInput.addEventListener("input", updateSearch);
+
+    // =========================
+    // MODAL ELIMINAR
+    // =========================
+
+    const modal =
+        document.getElementById("deleteModalCustom");
+
+    const deleteButtons =
+        document.querySelectorAll(".delete-btn");
+
+    const deleteForm =
+        document.getElementById("deleteForm");
+
+    const deleteMessage =
+        document.getElementById("deleteMessage");
+
+    const cancelDelete =
+        document.getElementById("cancelDelete");
+
+    // ABRIR MODAL
+    deleteButtons.forEach(btn => {
+
+        btn.addEventListener("click", function(){
+
+            const url =
+                this.dataset.url;
+
+            const nombre =
+                this.dataset.nombre;
+
+            deleteForm.action = url;
+
+            deleteMessage.innerHTML =
+                `¿Deseas eliminar a <strong>${nombre}</strong>?`;
+
+            modal.style.display = "flex";
+
+        });
+
+    });
+
+    // CANCELAR
+    cancelDelete.addEventListener("click", function(){
+
+        modal.style.display = "none";
+
+    });
+
+    // CERRAR AFUERA
+    modal.addEventListener("click", function(e){
+
+        if(e.target === modal){
+            modal.style.display = "none";
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

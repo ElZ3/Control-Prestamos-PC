@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-header bg-white" >
+        <h4 class="text-center" class="fw-bold text-dark" >Detalle del Préstamo</h4>
+    </div>
+
+    <div class="card-body">
+
+        <p><strong>Usuario:</strong> {{ prestamo.usuario.first_name }} {{ prestamo.usuario.last_name }}</p>
+
+        <p><strong>Código de equipo:</strong> {{ prestamo.equipo.codigo }}</p>
+
+        <p><strong>Equipo:</strong> {{ prestamo.equipo.codigo }} - {{ prestamo.equipo.marca }}</p>
+
+        <p><strong>Fecha préstamo:</strong> {{ prestamo.fecha_prestamo }}</p>
+
+        <p><strong>Fecha límite:</strong> {{ prestamo.fecha_limite }}</p>
+
+        <p><strong>Estado:</strong> {{ prestamo.estado }}</p>
+
+        <p><strong>Condición entrega:</strong> {{ prestamo.condicion_entrega }}</p>
+
+        <a href="{% url 'prestamo_list' %}" class="btn btn-dark">
+            Volver
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}

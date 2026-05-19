@@ -1,0 +1,324 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Préstamo PC</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root{
+    --main:#E69894;
+    --dark:#791F1B;
+}
+
+/* BODY */
+body{
+    background:#f5f5f5;
+}
+
+/* WRAPPER */
+#wrapper{
+    min-height:100vh;
+    display:flex;
+}
+
+/* SIDEBAR */
+#sidebar-wrapper{
+    width:260px;
+    background:var(--main);
+    display:flex;
+    flex-direction:column;
+}
+
+/* CARD ADMIN */
+.admin-card{
+    background:var(--dark);
+    color:white;
+    margin:15px;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* MENÚ ITEMS */
+.menu-item{
+    color:black;
+    padding:12px 18px;
+    display:flex;
+    align-items:center;
+    text-decoration:none;
+    border-radius:8px;
+    margin:4px 10px;
+
+    transition: all 0.25s ease;
+    position: relative;
+}
+
+/* ICONOS */
+.menu-item i{
+    margin-right:10px;
+    transition: transform 0.2s ease;
+}
+
+/* HOVER SUAVE */
+.menu-item:hover{
+    background:var(--dark);
+    color:white;
+    transform: translateX(4px);
+}
+
+/* ICONO ANIMACIÓN */
+.menu-item:hover i{
+    transform: scale(1.1);
+}
+
+/* CLICK SUAVE */
+.menu-item:active{
+    transform: scale(0.97);
+}
+
+/* NAVBAR */
+.navbar{
+    background:white;
+    color:black;
+}
+
+/* CONTENIDO */
+#page-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    flex: 1;
+}
+
+/* ALERTAS FLOTANTES */
+#alert-container{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+
+    width: 350px;
+}
+
+/* ANIMACIÓN */
+#alert-container .alert{
+    animation: slideIn 0.3s ease;
+    border: none;
+    border-radius: 12px;
+}
+
+/* ENTRADA SUAVE */
+@keyframes slideIn{
+    from{
+        opacity:0;
+        transform: translateX(30px);
+    }
+    to{
+        opacity:1;
+        transform: translateX(0);
+    }
+}
+
+/* Footer discreto y sticky */
+#page-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+#page-content-wrapper > .container-fluid{
+    flex: 1 0 auto;
+}
+
+.site-footer{
+    background: var(--dark);
+    color: #fff;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.site-footer .container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5rem;
+    flex-wrap:wrap;
+}
+
+.site-footer a, .site-footer .link-secondary{
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+}
+.site-footer .link-secondary:hover{
+    color: #fff;
+    text-decoration: underline;
+}
+
+.site-footer .btn-outline-light{
+    border-color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.9);
+    transition: all 0.2s ease;
+}
+.site-footer .btn-outline-light:hover{
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+@media (max-width:576px){
+    .site-footer .container{
+        flex-direction:column;
+        text-align:center;
+        gap:0.25rem;
+    }
+    .site-footer .container a{display:inline-block;}
+}
+/* Footer: discreto, responsive y sticky cuando el contenido es corto */
+#page-content-wrapper{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    flex: 1;
+}
+#page-content-wrapper > .container-fluid{
+    flex: 1 0 auto;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="wrapper">
+
+<!-- SIDEBAR -->
+<div id="sidebar-wrapper">
+
+    <!-- CARD ADMIN -->
+    <div class="admin-card">
+        <i class="fas fa-user-shield fa-2x mb-2"></i>
+        <h6 class="mb-1">{{ request.user.nombre }} {{ request.user.apellido }}</h6>
+        <small>{{ request.user.get_rol_display }}</small>
+    </div>
+
+    <!-- MENÚ -->
+    <a href="{% url 'reporte:dashboard' %}" class="menu-item">
+        <i class="fas fa-chart-pie"></i> Inicio
+    </a>
+
+    <a href="{% url 'prestatario_list' %}" class="menu-item">
+        <i class="fas fa-users"></i> Usuarios
+    </a>
+
+    <a href="{% url 'carrera_list' %}" class="menu-item">
+        <i class="fas fa-graduation-cap"></i> Carreras
+    </a>
+
+    <a href="{% url 'equipo_list' %}" class="menu-item">
+        <i class="fas fa-laptop"></i> Equipos
+    </a>
+
+    <a href="{% url 'prestamo_list' %}" class="menu-item">
+        <i class="fas fa-hand-holding me-2"></i> Préstamos
+    </a>
+
+    <a href="{% url 'devolucion_list' %}" class="menu-item">
+        <i class="fas fa-undo"></i> Devoluciones
+    </a>
+
+    <a href="{% url 'reporte:reporte' %}" class="menu-item">
+        <i class="fas fa-file-alt"></i> Reportes
+    </a>
+
+    <!-- LOGOUT -->
+    <form action="{% url 'logout' %}" method="post" class="mt-auto p-3">
+        {% csrf_token %}
+        <button class="btn w-100" style="background:var(--dark); color:white; border:none;">
+            <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+        </button>
+    </form>
+
+</div>
+
+<!-- CONTENIDO -->
+<div id="page-content-wrapper">
+
+        <!-- NAVBAR -->
+        <nav class="navbar p-3 border-bottom">
+            <span class="fw-bold">Sistema de Préstamo PC</span>
+        </nav>
+
+        <div class="container-fluid p-4">
+
+            {% if messages %}
+    <div id="alert-container">
+
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+</div>
+
+<script>
+    // AUTO OCULTAR DESPUÉS DE 5 SEGUNDOS
+    setTimeout(function() {
+
+        let alerts = document.querySelectorAll('#alert-container .alert');
+
+        alerts.forEach(function(alert){
+
+            // bootstrap fade
+            alert.classList.remove('show');
+
+            setTimeout(() => {
+                alert.remove();
+            }, 500);
+
+        });
+
+    }, 5000);
+</script>
+{% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+        <footer class="site-footer">
+            <div class="container-fluid py-3">
+                <div class="row align-items-center">
+                    <!-- Columna 1: Información Empresa -->
+                    <div class="col-12 col-md-4 text-center text-md-start mb-2 mb-md-0">
+                        <h6 class="mb-1" style="color:rgba(255,255,255,0.95);">TechEdu Solutions</h6>
+                        <small class="text-white-50">sistemas@techedu.sv | +503 2301-0000</small>
+                    </div>
+                    
+                    <!-- Columna 2: Copyright Centralizado -->
+                    <div class="col-12 col-md-4 text-center mb-2 mb-md-0">
+                        <small class="text-white-50">© 2026 TechEdu Solutions. Todos los derechos reservados.</small>
+                    </div>
+                    
+                    <!-- Columna 3: Redes Sociales y Equipo -->
+                    <div class="col-12 col-md-4 text-center text-md-end">
+                        <a href="https://www.facebook.com" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="mailto:contacto@techedu.sv" class="btn btn-sm btn-outline-light me-2" title="Correo"><i class="fas fa-envelope"></i></a>
+                        <a href="{% url 'integrantes' %}" class="btn btn-sm btn-outline-light" title="Equipo"><i class="fas fa-users me-1"></i>Equipo</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+</div>
+
+</div>
+
+</body>
+</html>

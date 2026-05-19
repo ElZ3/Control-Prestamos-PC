@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card shadow-sm mb-4 col-md-8 mx-auto">
+    <div class="card-header bg-white py-3">
+        <h4 class="mb-0 text-dark fw-bold text-center d-flex justify-content-center align-items-center">
+            <i class="fas fa-hand-holding me-2"></i> {{ titulo }}
+        </h4>
+    </div>
+
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- USUARIO Y EQUIPO -->
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Usuario</label>
+<select name="usuario" class="form-select">
+    {% if prestamo %}
+        <option selected>{{ prestamo.usuario.first_name }} {{ prestamo.usuario.last_name }}</option>
+    {% else %}
+        <option>--- Seleccione Usuario Disponible ---</option>
+        <option>Juan Pérez (Estudiante)</option>
+        <option>Dra. Laura Torres (Docente)</option>
+    {% endif %}
+</select>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Equipo</label>
+                    <select name="equipo" class="form-select">
+                        <option>--- Seleccione Equipo ---</option>
+                        <option selected>
+                            {{ prestamo.equipo.codigo }} - {{ prestamo.equipo.marca }}
+                        </option>
+                    </select>
+                </div>
+
+            </div>
+
+            <!-- FECHAS -->
+            <div class="row mb-3">
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Fecha Préstamo</label>
+                    <input type="date" name="fecha_prestamo" class="form-control"
+                           value="{{ prestamo.fecha_prestamo|date:'Y-m-d' }}">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Fecha Límite</label>
+                    <input type="date" name="fecha_limite" class="form-control"
+                           value="{{ prestamo.fecha_limite|date:'Y-m-d' }}">
+                </div>
+
+            </div>
+
+            <!-- CONDICIÓN Y OBSERVACIONES -->
+            <div class="mb-3">
+
+                <label class="form-label fw-bold">Condición de Entrega</label>
+                <input type="text" name="condicion_entrega" class="form-control"
+                       value="{{ prestamo.condicion_entrega|default:'' }}"
+                       placeholder="Ej: Excelente estado">
+
+            </div>
+
+            <div class="mb-4">
+
+                <label class="form-label fw-bold">Observaciones</label>
+                <textarea name="observaciones" class="form-control" rows="3"
+                          placeholder="Detalles adicionales...">{{ prestamo.observaciones|default:'' }}</textarea>
+
+            </div>
+
+            <!-- BOTONES -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+
+                <a href="{% url 'prestamo_list' %}" class="btn btn-outline-secondary">
+                    Cancelar
+                </a>
+
+                <button type="submit" class="btn text-white" style="background-color:#791F1B;">
+                    Guardar Préstamo
+                </button>
+
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

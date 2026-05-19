@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Préstamo PC</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+:root{
+    --main:#E69894;
+    --dark:#791F1B;
+}
+
+/* BODY */
+body{
+    background:#f5f5f5;
+}
+
+/* NAVBAR */
+.navbar{
+    background:white;
+    color:black;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* CONTENIDO FULL WIDTH */
+.main-content{
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-content > .container-fluid{
+    flex: 1 0 auto;
+    padding: 2rem;
+}
+
+/* ALERTAS FLOTANTES */
+#alert-container{
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    width: 350px;
+}
+
+#alert-container .alert{
+    animation: slideIn 0.3s ease;
+    border: none;
+    border-radius: 12px;
+}
+
+@keyframes slideIn{
+    from{
+        opacity:0;
+        transform: translateX(30px);
+    }
+    to{
+        opacity:1;
+        transform: translateX(0);
+    }
+}
+
+/* Footer: discreto, responsive y sticky cuando el contenido es corto */
+.main-content{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.main-content > .container-fluid{
+    flex: 1 0 auto;
+}
+
+.site-footer{
+    background: var(--dark);
+    color: #fff;
+    padding: 0.6rem 0;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+}
+
+.site-footer .btn-outline-light{
+    border-color: rgba(255,255,255,0.3);
+    color: rgba(255,255,255,0.9);
+    transition: all 0.2s ease;
+}
+.site-footer .btn-outline-light:hover{
+    border-color: rgba(255,255,255,0.8);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.site-footer a{
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+}
+
+@media (max-width:768px){
+    .site-footer {
+        font-size: 0.85rem;
+    }
+    .site-footer .btn-sm {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- CONTENIDO FULL WIDTH SIN SIDEBAR -->
+<div class="main-content">
+
+    <!-- NAVBAR -->
+    <nav class="navbar p-3 border-bottom">
+        <div class="container-fluid">
+            <span class="fw-bold">Sistema de Préstamo PC</span>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+
+        {% if messages %}
+        <div id="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <script>
+            setTimeout(function() {
+                let alerts = document.querySelectorAll('#alert-container .alert');
+                alerts.forEach(function(alert){
+                    alert.classList.remove('show');
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 500);
+                });
+            }, 5000);
+        </script>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="container-fluid py-3">
+            <div class="row align-items-center">
+                <!-- Columna 1: Información Empresa -->
+                <div class="col-12 col-md-4 text-center text-md-start mb-2 mb-md-0">
+                    <h6 class="mb-1" style="color:rgba(255,255,255,0.95);">TechEdu Solutions</h6>
+                    <small class="text-white-50">sistemas@techedu.sv | +503 2301-0000</small>
+                </div>
+                
+                <!-- Columna 2: Copyright Centralizado -->
+                <div class="col-12 col-md-4 text-center mb-2 mb-md-0">
+                    <small class="text-white-50">© 2026 TechEdu Solutions. Todos los derechos reservados.</small>
+                </div>
+                
+                <!-- Columna 3: Redes Sociales y Equipo -->
+                <div class="col-12 col-md-4 text-center text-md-end">
+                    <a href="https://www.facebook.com" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com" target="_blank" class="btn btn-sm btn-outline-light me-2" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="mailto:contacto@techedu.sv" class="btn btn-sm btn-outline-light me-2" title="Correo"><i class="fas fa-envelope"></i></a>
+                    <a href="{% url 'integrantes' %}" class="btn btn-sm btn-outline-light" title="Equipo"><i class="fas fa-users me-1"></i>Equipo</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

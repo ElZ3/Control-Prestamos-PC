@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+
+/* =========================
+   MODAL PERSONALIZADO
+========================= */
+
+.custom-modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 99999;
+}
+
+.custom-modal-content{
+    background: white;
+    width: 400px;
+    border-radius: 18px;
+    padding: 30px;
+    text-align: center;
+
+    animation: modalShow 0.25s ease;
+}
+
+.custom-modal-icon{
+    width: 70px;
+    height: 70px;
+
+    background: #fff3cd;
+    color: #856404;
+
+    border-radius: 50%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin: 0 auto 20px;
+
+    font-size: 28px;
+}
+
+@keyframes modalShow{
+    from{
+        opacity:0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to{
+        opacity:1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+</style>
+
+<div class="card shadow-sm mb-4">
+
+    <!-- HEADER -->
+    <div class="card-header bg-white text-center py-3">
+        <h4 class="mb-0 text-dark fw-bold d-flex justify-content-center align-items-center">
+            <i class="fas fa-laptop me-2 text-dark"></i>
+            Gestión de Equipos
+        </h4>
+    </div>
+
+    <!-- BUSCADOR + BOTÓN -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap px-3 pt-3 pb-2">
+
+        <!-- BUSCADOR -->
+        <form class="mb-0 flex-grow-1 me-3" onsubmit="return false;">
+
+            <div class="input-group w-100">
+
+                <input type="text"
+                       id="searchInput"
+                       class="form-control border-dark"
+                       placeholder="Buscar por código, marca o modelo...">
+
+                <button type="button"
+                        class="btn text-white"
+                        style="background-color:#791F1B; cursor: default;">
+
+                    <i class="fas fa-search"></i>
+
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- BOTÓN -->
+        <div class="d-flex gap-2 align-items-center flex-shrink-0">
+
+            <a href="{% url 'equipo_create' %}"
+               class="btn text-white"
+               style="background-color:#791F1B;">
+
+                Nuevo Equipo
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+    <div class="card-body pt-2">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle" id="equiposTable">
+
+                <thead class="table-dark">
+
+                    <tr>
+                        <th>Código</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Estado</th>
+                        <th>Mantenimiento</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for e in equipos %}
+
+                <tr class="fila-equipo">
+
+                    <!-- CÓDIGO -->
+                    <td class="codigo-col">
+                        <strong>{{ e.codigo }}</strong>
+                    </td>
+
+                    <!-- MARCA -->
+                    <td class="marca-col">
+                        {{ e.marca }}
+                    </td>
+
+                    <!-- MODELO -->
+                    <td class="modelo-col">
+                        {{ e.modelo }}
+                    </td>
+
+                    <!-- ESTADO -->
+                    <td>
+
+                        {% if e.estado == 'DISPONIBLE' %}
+
+                            <span class="badge bg-success">
+                                Disponible
+                            </span>
+
+                        {% elif e.estado == 'EN_USO' %}
+
+                            <span class="badge bg-primary">
+                                En uso
+                            </span>
+
+                        {% elif e.estado == 'MANTENIMIENTO' %}
+
+                            <span class="badge bg-warning text-dark">
+                                Mantenimiento
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                Inactivo
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- MANTENIMIENTO -->
+                    <td>
+
+                        {% if e.fecha_mantenimiento %}
+
+                            {{ e.fecha_mantenimiento|date:"d/m/Y" }}
+
+                            {% if e.necesita_mantenimiento_hoy %}
+
+                                <br>
+
+                                <small class="text-warning fw-bold">
+                                    ⚠ Cambiar estado a Mantenimiento
+                                </small>
+
+                            {% elif e.mantenimiento_vencido %}
+
+                                <br>
+
+                                <small class="text-danger fw-bold">
+                                    ⚠ Requiere mantenimiento
+                                </small>
+
+                            {% endif %}
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                Sin registro
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <!-- ACCIONES -->
+                    <td class="text-center">
+
+                        <!-- EDITAR -->
+                        <a href="{% url 'equipo_update' e.pk %}"
+                           class="text-dark me-3">
+
+                            <i class="fas fa-pencil-alt"></i>
+
+                        </a>
+
+                        <!-- ELIMINAR -->
+                        <button type="button"
+                                class="btn p-0 border-0 bg-transparent text-dark delete-btn"
+                                data-url="{% url 'equipo_delete' e.pk %}"
+                                data-codigo="{{ e.codigo }}">
+
+                            <i class="fas fa-trash"></i>
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr id="noResultsRow">
+
+                    <td colspan="6"
+                        class="text-center text-muted py-4">
+
+                        No hay equipos registrados
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+                <!-- SIN RESULTADOS JS -->
+                <tr id="jsNoResultsRow" style="display:none;">
+
+                    <td colspan="6"
+                        class="text-center text-muted py-4">
+
+                        No se encontraron coincidencias.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ELIMINAR
+========================= -->
+
+<div id="deleteModalCustom" class="custom-modal">
+
+    <div class="custom-modal-content">
+
+        <div class="custom-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+
+        <h5 class="fw-bold mb-2">
+            Eliminar Equipo
+        </h5>
+
+        <p id="deleteMessage"
+           class="text-muted mb-4">
+
+            ¿Deseas eliminar este equipo?
+
+        </p>
+
+        <div class="d-flex justify-content-center gap-2">
+
+            <!-- CANCELAR -->
+            <button id="cancelDelete"
+                    class="btn btn-light border">
+
+                Cancelar
+
+            </button>
+
+            <!-- FORM ELIMINAR -->
+            <form id="deleteForm"
+                  method="POST">
+
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="btn text-white"
+                        style="background-color:#791F1B;">
+
+                    Sí, eliminar
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // =========================
+    // BUSCADOR
+    // =========================
+
+    const searchInput = document.getElementById("searchInput");
+
+    const rows = document.querySelectorAll(".fila-equipo");
+
+    const noResults = document.getElementById("jsNoResultsRow");
+
+    searchInput.addEventListener("input", function() {
+
+        const term = searchInput.value.toLowerCase();
+
+        let matches = 0;
+
+        rows.forEach(row => {
+
+            const codigo =
+                row.querySelector(".codigo-col")
+                .textContent
+                .toLowerCase();
+
+            const marca =
+                row.querySelector(".marca-col")
+                .textContent
+                .toLowerCase();
+
+            const modelo =
+                row.querySelector(".modelo-col")
+                .textContent
+                .toLowerCase();
+
+            if(
+                codigo.includes(term) ||
+                marca.includes(term) ||
+                modelo.includes(term)
+            ){
+                row.style.display = "";
+                matches++;
+            }
+            else{
+                row.style.display = "none";
+            }
+
+        });
+
+        noResults.style.display =
+            matches === 0 ? "" : "none";
+
+    });
+
+    // =========================
+    // MODAL ELIMINAR
+    // =========================
+
+    const modal =
+        document.getElementById("deleteModalCustom");
+
+    const deleteButtons =
+        document.querySelectorAll(".delete-btn");
+
+    const deleteForm =
+        document.getElementById("deleteForm");
+
+    const deleteMessage =
+        document.getElementById("deleteMessage");
+
+    const cancelDelete =
+        document.getElementById("cancelDelete");
+
+    // ABRIR MODAL
+    deleteButtons.forEach(btn => {
+
+        btn.addEventListener("click", function(){
+
+            const url = this.dataset.url;
+
+            const codigo = this.dataset.codigo;
+
+            deleteForm.action = url;
+
+            deleteMessage.innerHTML =
+                `¿Deseas eliminar el equipo <strong>${codigo}</strong>?`;
+
+            modal.style.display = "flex";
+
+        });
+
+    });
+
+    // CANCELAR
+    cancelDelete.addEventListener("click", function(){
+
+        modal.style.display = "none";
+
+    });
+
+    // CERRAR CLICK AFUERA
+    modal.addEventListener("click", function(e){
+
+        if(e.target === modal){
+            modal.style.display = "none";
+        }
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="card shadow-sm mb-4">
+
+    <div class="card-header bg-white text-center py-3">
+        <h4 class="mb-0 text-dark fw-bold d-flex justify-content-center align-items-center">
+            <i class="fas fa-undo me-2 text-dark"></i>
+            Gestión de Devoluciones
+        </h4>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap px-3 pt-3 pb-2">
+
+        <!-- BUSCADOR - ANCHO COMPLETO -->
+        <form method="GET" class="mb-0 flex-grow-1" onsubmit="return false;">
+            <div class="input-group w-100">
+                <input type="text"
+                       id="searchInput"
+                       name="q"
+                       class="form-control border-dark"
+                       placeholder="Buscar por usuario, equipo o código..."
+                       value="{{ query|default_if_none:'' }}">
+
+                <button type="button" 
+                        class="btn text-white"
+                        style="background-color:#791F1B; cursor: default;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+    <div class="card-body pt-2">
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="devolucionesTable">
+
+                <!-- CABECERA -->
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código Equipo</th>
+                        <th>Equipo</th>
+                        <th>Usuario</th>
+                        <th>Fecha Préstamo</th>
+                        <th>Fecha Límite</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for p in prestamos %}
+                <tr class="fila-devolucion">
+
+                    <td class="codigo-col">
+                        <strong>{{ p.equipo.codigo }}</strong>
+                    </td>
+
+                    <td class="equipo-col">
+                        {{ p.equipo.marca }}
+                    </td>
+
+                    <td class="usuario-col">
+                        {{ p.usuario.first_name }} {{ p.usuario.last_name }}
+                    </td>
+
+                    <td>
+                        {{ p.fecha_prestamo|date:"Y-m-d" }}
+                    </td>
+
+                    <td>
+                        {{ p.fecha_limite|date:"Y-m-d" }}
+                    </td>
+
+                    <td>
+                        {% if p.estado == 'ACTIVO' %}
+                            <span class="badge bg-warning text-dark">En préstamo</span>
+                        {% else %}
+                            <span class="badge bg-success">Devuelto</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center">
+                        <a href="{% url 'devolver_prestamo' p.pk %}"
+                           class="text-dark"
+                           title="Registrar Devolución"
+                           style="font-size: 18px;">
+                            <i class="fas fa-undo"></i>
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% empty %}
+                <tr id="noResultsRow">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No hay préstamos activos para devolución
+                    </td>
+                </tr>
+                {% endfor %}
+
+                <tr id="jsNoResultsRow" style="display: none;">
+                    <td colspan="7" class="text-center text-muted py-4">
+                        No se encontraron coincidencias en la búsqueda.
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS BUSCADOR -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const searchInput = document.getElementById("searchInput");
+    const rows = document.querySelectorAll(".fila-devolucion");
+    const jsNoResultsRow = document.getElementById("jsNoResultsRow");
+
+    searchInput.addEventListener("input", function() {
+        const searchTerm = searchInput.value.toLowerCase();
+        let matches = 0;
+
+        rows.forEach(row => {
+            const usuario = row.querySelector(".usuario-col").textContent.toLowerCase();
+            const equipo = row.querySelector(".equipo-col").textContent.toLowerCase();
+            const codigo = row.querySelector(".codigo-col").textContent.toLowerCase();
+
+            if (
+                usuario.includes(searchTerm) ||
+                equipo.includes(searchTerm) ||
+                codigo.includes(searchTerm)
+            ) {
+                row.style.display = "";
+                matches++;
+            } else {
+                row.style.display = "none";
+            }
+        });
+
+        jsNoResultsRow.style.display = matches === 0 ? "" : "none";
+    });
+});
+</script>
+
+{% endblock %}

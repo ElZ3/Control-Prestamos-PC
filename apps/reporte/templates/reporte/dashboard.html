@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    .titulo-grueso {
+        font-weight: 750;
+        font-size: 70px;
+    }
+</style>
+
+<div class="container mt-4 text-center">
+
+    <div style="background:#8B1E1E; color:white; padding:10px; border-radius:10px; margin-bottom:40px;">
+        <h1 class="titulo-grueso">SERVICIOS</h1>
+        <h1 class="titulo-grueso">UNICAES</h1>
+    </div>
+
+<style>
+.card-cuadrada {
+    height: 150px;              /* tamaño cuadrado */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+    border-radius: 12px;
+}
+
+.titulo-card {
+    font-size: 18px;
+    line-height: 1.2;
+}
+</style>
+
+<div class="row justify-content-center g-4">
+
+    <!-- DISPONIBLES -->
+    <div class="col-md-2">
+        <div class="card-cuadrada">
+            <h1 class="fw-bold mb-1">{{ equipos_disponibles }}</h1>
+            <p class="titulo-card fw-bold mb-0">
+                Equipos<br>Disponibles
+            </p>
+        </div>
+    </div>
+
+    <!-- PRESTADOS -->
+    <div class="col-md-2">
+        <div class="card-cuadrada">
+            <h1 class="fw-bold mb-1">{{ equipos_prestados }}</h1>
+            <p class="titulo-card fw-bold mb-0">
+                Equipos<br>Prestados
+            </p>
+        </div>
+    </div>
+
+    <!-- MANTENIMIENTO -->
+    <div class="col-md-2">
+        <div class="card-cuadrada">
+            <h1 class="fw-bold mb-1">{{ equipos_mantenimiento }}</h1>
+            <p class="titulo-card fw-bold mb-0">
+                Equipos en<br>Mantenimiento
+            </p>
+        </div>
+    </div>
+
+    <!-- HOY -->
+    <div class="col-md-2">
+        <div class="card-cuadrada">
+            <h1 class="fw-bold mb-1">{{ prestamos_hoy }}</h1>
+            <p class="titulo-card fw-bold mb-0">
+                Préstamos<br>hoy
+            </p>
+        </div>
+    </div>
+
+</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+
+        <div class="card shadow-sm">
+
+            <!-- HEADER -->
+            <div class="card-header bg-white py-3 text-center">
+                <h4 class="mb-0 text-dark fw-bold d-flex justify-content-center align-items-center">
+                    <i class="fas fa-users-cog me-2 text-dark"></i>
+                    {{ titulo }}
+                </h4>
+            </div>
+
+            <!-- BODY -->
+            <div class="card-body">
+
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    <!-- CREDENCIALES -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Carnet</label>
+                            {{ form.carnet }}
+                            <div class="text-danger small">{{ form.carnet.errors.0 }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                             <label class="form-label fw-bold">Contraseña</label>
+                                {{ form.password }}
+
+                                <div class="form-text text-warning">
+                                    ⚠️ {{ form.password.help_text }}
+                                </div>
+
+                                <div class="text-danger small mt-1">
+                                    {{ form.password.errors.0 }}
+                                </div>
+                        </div>
+                    </div>
+
+                    <!-- NOMBRES -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombres</label>
+                            {{ form.nombre }}
+                            <div class="text-danger small">{{ form.nombre.errors.0 }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Apellidos</label>
+                            {{ form.apellido }}
+                            <div class="text-danger small">{{ form.apellido.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- CONTACTO -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Correo</label>
+                            {{ form.correo }}
+                            <div class="text-danger small">{{ form.correo.errors.0 }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Teléfono</label>
+                            {{ form.telefono }}
+                            <div class="text-danger small">{{ form.telefono.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- DUI + ROL -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">DUI</label>
+                            {{ form.dui }}
+                            <div class="text-danger small">{{ form.dui.errors.0 }}</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Rol</label>
+                            {{ form.rol }}
+                            <div class="text-danger small">{{ form.rol.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- ESTADO -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Estado</label>
+                            {{ form.is_active }}
+                            <div class="text-danger small">{{ form.is_active.errors.0 }}</div>
+                        </div>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div class="d-flex justify-content-end border-top pt-3">
+
+                        <a href="{% url 'usuario_list' %}"
+                           class="btn btn-white border border-dark me-2 text-dark">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn text-white"
+                                style="background-color:#791F1B;">
+                            Guardar
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

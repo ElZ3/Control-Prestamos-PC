@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h4 class="mb-0 text-dark fw-bold text-center">
+                    <i class="fas fa-undo me-2"></i>Confirmar Devolución
+                </h4>
+            </div>
+
+            <div class="card-body">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="alert alert-info py-2">
+                        <p class="mb-1"><strong>Usuario:</strong> {{ prestamo.usuario.first_name }} {{ prestamo.usuario.last_name }}</p>
+                        <p class="mb-0"><strong>Equipo:</strong> {{ prestamo.equipo.codigo }} - {{ prestamo.equipo.marca }}</p>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Estado del equipo al recibir</label>
+                        <select name="condicion_devolucion" class="form-select">
+                            <option value="BUENO">Bueno</option>
+                            <option value="REGULAR">Regular</option>
+                            <option value="DAÑADO">Dañado</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="danos" name="presenta_danos">
+                        <label class="form-check-label" for="danos">¿Presenta daños?</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Observación (obligatorio)</label>
+                        <textarea name="observacion_devolucion" class="form-control" rows="3" placeholder="Describa el estado de entrega..."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end border-top pt-3">
+                        <a href="{% url 'devolucion_list' %}" class="btn border border-dark bg-white me-2 text-dark">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn text-white" style="background:#791F1B;">
+                            Confirmar Devolución
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
