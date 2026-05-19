@@ -45,7 +45,7 @@ def integrantes(request):
         {'first_name': 'Daniel', 'last_name': 'Pozo', 'role': 'Gerente del Proyecto', 'email': 'daniel.pozo@unicaes.edu.sv', 'image': 'img/integrantes/daniel_pozo.jpg'},
         {'first_name': 'Karla', 'last_name': 'Pineda', 'role': 'Análisis de Requerimientos', 'email': 'karla.pineda@unicaes.edu.sv', 'image': 'img/integrantes/karla_pineda.jpg'},
         {'first_name': 'Ana', 'last_name': 'Villeda', 'role': 'Diseño UI/UX', 'email': 'ana.villeda@unicaes.edu.sv', 'image': 'img/integrantes/ana_villeda.jpg'},
-        {'first_name': 'Fabio', 'last_name': 'de la Cruz', 'role': 'Diseño / Tester y QA', 'email': 'fabio.delacruz@unicaes.edu.sv', 'image': 'img/integrantes/fabio_de.jpg'},
+        {'first_name': 'Fabio', 'last_name': 'DelaCruz', 'role': 'Diseño / Tester y QA', 'email': 'fabio.delacruz@unicaes.edu.sv', 'image': 'img/integrantes/fabio_de.jpg'},
         {'first_name': 'Samuel', 'last_name': 'Ventura', 'role': 'Desarrollador Backend/Frontend', 'email': 'samuel.ventura@unicaes.edu.sv', 'image': 'img/integrantes/samuel_ventura.jpg'},
         {'first_name': 'Diego', 'last_name': 'Escobar', 'role': 'Desarrollador Backend/Frontend', 'email': 'diego.escobar@unicaes.edu.sv', 'image': 'img/integrantes/diego_escobar.jpg'},
         {'first_name': 'Ervin', 'last_name': 'Durán', 'role': 'Soporte y Mantenimiento', 'email': 'ervin.duran@unicaes.edu.sv', 'image': 'img/integrantes/ervin_duran.jpg'},
