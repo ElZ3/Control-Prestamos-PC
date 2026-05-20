@@ -1,27 +1,27 @@
-<!--"""
+<!--
 ====================================================================
 SISTEMA DE GESTIÓN DE PRÉSTAMO DE LAPTOPS (RESO-LAP)
 ====================================================================
-Descripción: Aplicación backend en Django para el control, 
-             asignación y devolución de laptops.
+Descripción: Aplicación backend en Django para el control, asignación y devolución de laptops.
 Organización: ESTUDIO DAFARO
 Contacto:     EstudioDafaro@techedu.sv | +503 2301-0000
 Año de Creación: 2026
 País: El Salvador
 
-Licencia: Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional 
+Licencia: Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional
           (CC BY-NC-ND 4.0)
 © 2026 Estudio Dafaro. Algunos derechos reservados.
 
 Usted es libre de: Compartir y utilizar este software bajo las siguientes condiciones:
   - Atribución: Debe dar crédito a Estudio Dafaro.
   - No Comercial: No puede utilizar este material con fines comerciales.
-  - Sin Derivadas: Si remezcla, transforma o crea a partir del material, 
+  - Sin Derivadas: Si remezcla, transforma o crea a partir del material,
     no puede distribuir el material modificado.
 
 Para ver una copia de esta licencia, visita: http://creativecommons.org/licenses/by-nc-nd/4.0/
 ====================================================================
-"""-->
+-->
+
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
@@ -102,10 +102,28 @@ body{
 .site-footer{
     background: var(--dark);
     color: #fff;
-    padding: 0.6rem 0;
-    font-size: 0.9rem;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    flex-shrink: 0;
+    padding: 0.25rem 0;
+    font-size: 0.78rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    line-height: 0.8;
+}
+
+.site-footer .container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:0.5rem;
+    flex-wrap:wrap;
+}
+
+.site-footer a, .site-footer .link-secondary{
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+}
+
+.site-footer .link-secondary:hover{
+    color: #fff;
+    text-decoration: underline;
 }
 
 .site-footer .btn-outline-light{
@@ -119,19 +137,13 @@ body{
     background: rgba(255,255,255,0.1);
 }
 
-.site-footer a{
-    color: rgba(255,255,255,0.9);
-    text-decoration: none;
-}
-
-@media (max-width:768px){
-    .site-footer {
-        font-size: 0.85rem;
+@media (max-width:576px){
+    .site-footer .container{
+        flex-direction:column;
+        text-align:center;
+        gap:0.25rem;
     }
-    .site-footer .btn-sm {
-        padding: 0.35rem 0.5rem;
-        font-size: 0.8rem;
-    }
+    .site-footer .container a{display:inline-block;}
 }
 </style>
 
@@ -179,17 +191,17 @@ body{
 
     <!-- FOOTER -->
     <footer class="site-footer">
-        <div class="container-fluid py-3">
+        <div class="container-fluid py-1">
             <div class="row align-items-center">
                 <!-- Columna 1: Información Empresa -->
                 <div class="col-12 col-md-4 text-center text-md-start mb-2 mb-md-0">
-                    <h6 class="mb-1" style="color:rgba(255,255,255,0.95);">TechEdu Solutions</h6>
-                    <small class="text-white-50">sistemas@techedu.sv | +503 2301-0000</small>
+                    <h6 class="mb-1" style="color:rgba(255,255,255,0.95);">ESTUDIO DAFARO</h6>
+                    <small class="text-white-50">EstudioDafaro@techedu.sv | +503 2301-0000</small>
                 </div>
                 
                 <!-- Columna 2: Copyright Centralizado -->
                 <div class="col-12 col-md-4 text-center mb-2 mb-md-0">
-                    <small class="text-white-50">© 2026 TechEdu Solutions. Todos los derechos reservados.</small>
+                    <small class="text-white-50">© 2026 Estudio Dafaro. Todos los derechos reservados.</small>
                 </div>
                 
                 <!-- Columna 3: Redes Sociales y Equipo -->
