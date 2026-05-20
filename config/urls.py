@@ -1,18 +1,26 @@
 """
-URL configuration for config project.
+====================================================================
+SISTEMA DE GESTIÓN DE PRÉSTAMO DE LAPTOPS (RESO-LAP)
+====================================================================
+Descripción: Aplicación backend en Django para el control, 
+             asignación y devolución de laptops.
+Organización: ESTUDIO DAFARO
+Contacto:     EstudioDafaro@techedu.sv | +503 2301-0000
+Año de Creación: 2026
+País: El Salvador
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+Licencia: Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional 
+          (CC BY-NC-ND 4.0)
+© 2026 Estudio Dafaro. Algunos derechos reservados.
+
+Usted es libre de: Compartir y utilizar este software bajo las siguientes condiciones:
+  - Atribución: Debe dar crédito a Estudio Dafaro.
+  - No Comercial: No puede utilizar este material con fines comerciales.
+  - Sin Derivadas: Si remezcla, transforma o crea a partir del material, 
+    no puede distribuir el material modificado.
+
+Para ver una copia de esta licencia, visita: http://creativecommons.org/licenses/by-nc-nd/4.0/
+====================================================================
 """
 from django.contrib import admin
 from django.urls import path, include
