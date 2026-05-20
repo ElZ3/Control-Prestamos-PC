@@ -22,47 +22,271 @@ Usted es libre de: Compartir y utilizar este software bajo las siguientes condic
 Para ver una copia de esta licencia, visita: http://creativecommons.org/licenses/by-nc-nd/4.0/
 ====================================================================
 """-->
-{% extends 'base_clean.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-5">
-        <h2 class="mb-0" style="color:var(--dark);">Equipo de Desarrollo</h2>
-        <a href="javascript:history.back()" class="btn btn-sm" style="background:var(--dark); color:white;">&larr; Regresar</a>
+<div class="container py-4">
+
+    <style>
+        /* Eliminar menú lateral sólo en esta página */
+        #sidebar-wrapper{ display: none !important; }
+        #wrapper{ display: block !important; }
+        #page-content-wrapper{ margin-left: 0 !important; width: 100% !important; }
+
+        /* Botones de pestañas: texto siempre negro cuando inactivos; cuando activos usan la paleta (rojo oscuro -> texto blanco) */
+        .tab-btn { color: black !important; border-radius: .375rem; }
+        .tab-btn.tab-active {
+            background: var(--dark) !important; /* paleta: rojo oscuro */
+            color: #ffffff !important; /* texto blanco cuando está activo */
+            box-shadow: 0 6px 18px rgba(121,31,27,0.18);
+            border-color: var(--dark) !important;
+        }
+    </style>
+
+    <!-- NAVEGACIÓN SUPERIOR -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0" style="color:var(--dark);">Recursos e Información del Proyecto</h2>
+        <button type="button" class="btn btn-outline-dark btn-sm" onclick="history.back()">&larr; Regresar</button>
     </div>
 
-    <div class="row g-4">
-        {% for p in integrantes %}
-        <div class="col-12 col-sm-6 col-lg-3">
-            <div class="card h-100" style="border:1px solid rgba(0,0,0,0.08); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <!-- Imagen del integrante -->
-                <div class="position-relative" style="height: 250px; background: linear-gradient(135deg, rgba(230,152,148,0.1) 0%, rgba(121,31,27,0.05) 100%); overflow: hidden;">
-                    <img src="{% static p.image %}" alt="{{ p.first_name }} {{ p.last_name }}" class="img-fluid" style="width:100%; height:100%; object-fit: cover;">
-                </div>
+    <!-- BOTONES DE PESTAÑAS -->
+    <div class="d-flex justify-content-center gap-3 my-4">
+        <button id="btn-frameworks" class="btn btn-lg btn-outline-dark tab-btn" type="button">Frameworks</button>
+        <button id="btn-apis" class="btn btn-lg btn-outline-dark tab-btn" type="button">API's</button>
+        <button id="btn-integrantes" class="btn btn-lg btn-outline-dark tab-btn" type="button">Integrantes</button>
+    </div>
 
-                <!-- Contenido de la tarjeta -->
-                <div class="card-body text-center pb-2">
-                    <h5 class="card-title mb-1" style="color:var(--dark);">{{ p.first_name }} {{ p.first_surname }}</h5>
-                    <p class="text-muted mb-2" style="font-size:0.95rem;">{{ p.role }}</p>
-                    <p class="mb-2" style="font-size:0.9rem; color:#666;">
-                        <i class="fas fa-graduation-cap me-1" style="color:var(--main);"></i>
-                        <span>Ing. Sistemas Informáticos</span>
-                    </p>
-                    <p class="mb-0" style="font-size:0.9rem;">
-                        <i class="fas fa-envelope me-1" style="color:var(--dark);"></i>
-                        <a href="mailto:{{ p.email }}" class="text-decoration-none" style="color:var(--dark);">{{ p.email }}</a>
-                    </p>
+    <!-- CONTENEDORES -->
+    <div id="container-frameworks" style="display: none;">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Django</h5>
+                        <p class="card-text">Framework Backend</p>
+                        <p class="mb-1"><strong>Licencia:</strong> BSD de 3 cláusulas</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://github.com/django/django/blob/main/LICENSE" target="_blank">Leer Licencia</a>
+                    </div>
                 </div>
+            </div>
 
-                <!-- Footer con iconos de redes -->
-                <div class="card-footer bg-transparent border-top pt-3 pb-3 text-center">
-                    <a href="#" class="btn btn-sm btn-outline-secondary me-1" title="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="#" class="btn btn-sm btn-outline-secondary" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Bootstrap</h5>
+                        <p class="card-text">Framework UI</p>
+                        <p class="mb-1"><strong>Licencia:</strong> MIT</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://github.com/twbs/bootstrap/blob/main/LICENSE" target="_blank">Leer Licencia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Font Awesome</h5>
+                        <p class="card-text">Librería de Iconos</p>
+                        <p class="mb-1"><strong>Licencia:</strong> Free License (CC BY 4.0 / SIL OFL 1.1)</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://fontawesome.com/license/free" target="_blank">Leer Licencia</a>
+                    </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+
+    <div id="container-apis" style="display: none;">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">SQLite</h5>
+                        <p class="card-text">Motor de Base de Datos</p>
+                        <p class="mb-1"><strong>Licencia:</strong> Dominio Público</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://www.sqlite.org/copyright.html" target="_blank">Leer Licencia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">jsDelivr</h5>
+                        <p class="card-text">CDN</p>
+                        <p class="mb-1"><strong>Licencia:</strong> MIT</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://github.com/jsdelivr/jsdelivr/blob/master/LICENSE" target="_blank">Leer Licencia</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">cdnjs</h5>
+                        <p class="card-text">CDN</p>
+                        <p class="mb-1"><strong>Licencia:</strong> MIT</p>
+                        <a class="btn btn-sm btn-outline-primary" href="https://github.com/cdnjs/cdnjs/blob/master/LICENSE" target="_blank">Leer Licencia</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="container-integrantes">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+
+            <!-- Daniel Pozo -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/daniel_pozo.jpg' %}" class="card-img-top" alt="Daniel Pozo">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Daniel Pozo</h5>
+                        <p class="text-muted mb-1">Gerente del Proyecto</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:daniel@unicaes.edu.sv">daniel@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Karla Pineda -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/karla_pineda.jpg' %}" class="card-img-top" alt="Karla Pineda">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Karla Pineda</h5>
+                        <p class="text-muted mb-1">Análisis de Requerimientos</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:karla@unicaes.edu.sv">karla@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ana Villeda -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/ana_villeda.jpg' %}" class="card-img-top" alt="Ana Villeda">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Ana Villeda</h5>
+                        <p class="text-muted mb-1">Diseño UI/UX</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:ana@unicaes.edu.sv">ana@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fabio de la Cruz -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/fabio_de_la_cruz.jpg' %}" class="card-img-top" alt="Fabio de la Cruz">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Fabio de la Cruz</h5>
+                        <p class="text-muted mb-1">Diseño / Tester y QA</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:fabio@unicaes.edu.sv">fabio@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Samuel Ventura -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/samuel_ventura.jpg' %}" class="card-img-top" alt="Samuel Ventura">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Samuel Ventura</h5>
+                        <p class="text-muted mb-1">Desarrollador Backend/Frontend</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:samuel@unicaes.edu.sv">samuel@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diego Escobar -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/diego_escobar.jpg' %}" class="card-img-top" alt="Diego Escobar">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Diego Escobar</h5>
+                        <p class="text-muted mb-1">Desarrollador Backend/Frontend</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:diego@unicaes.edu.sv">diego@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ervin Durán -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/ervin_duran.jpg' %}" class="card-img-top" alt="Ervin Durán">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">Ervin Durán</h5>
+                        <p class="text-muted mb-1">Soporte y Mantenimiento</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:ervin@unicaes.edu.sv">ervin@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- William Deras -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="{% static 'img/integrantes/william_deras.jpg' %}" class="card-img-top" alt="William Deras">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="color:var(--dark);">William Deras</h5>
+                        <p class="text-muted mb-1">Soporte y Mantenimiento</p>
+                        <p class="mb-1">Ingeniería en Sistemas Informáticos</p>
+                        <p class="mb-0"><i class="fas fa-envelope me-1" style="color:var(--dark);"></i><a href="mailto:william@unicaes.edu.sv">william@unicaes.edu.sv</a></p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
+
+<!-- LÓGICA JAVASCRIPT (nativo) -->
+<script>
+    (function(){
+        const btnFrameworks = document.getElementById('btn-frameworks');
+        const btnApis = document.getElementById('btn-apis');
+        const btnIntegrantes = document.getElementById('btn-integrantes');
+
+        const containerFrameworks = document.getElementById('container-frameworks');
+        const containerApis = document.getElementById('container-apis');
+        const containerIntegrantes = document.getElementById('container-integrantes');
+
+        function showContainer(name){
+            containerFrameworks.style.display = 'none';
+            containerApis.style.display = 'none';
+            containerIntegrantes.style.display = 'none';
+
+                // reset active class on buttons
+                btnFrameworks.classList.remove('tab-active');
+                btnApis.classList.remove('tab-active');
+                btnIntegrantes.classList.remove('tab-active');
+
+                if(name === 'frameworks'){
+                    containerFrameworks.style.display = '';
+                    btnFrameworks.classList.add('tab-active');
+                } else if(name === 'apis'){
+                    containerApis.style.display = '';
+                    btnApis.classList.add('tab-active');
+                } else {
+                    containerIntegrantes.style.display = '';
+                    btnIntegrantes.classList.add('tab-active');
+                }
+        }
+
+        // Eventos
+        btnFrameworks.addEventListener('click', function(){ showContainer('frameworks'); });
+        btnApis.addEventListener('click', function(){ showContainer('apis'); });
+        btnIntegrantes.addEventListener('click', function(){ showContainer('integrantes'); });
+
+        // Estado por defecto
+        document.addEventListener('DOMContentLoaded', function(){
+            showContainer('integrantes');
+        });
+    })();
+</script>
+
 {% endblock %}
